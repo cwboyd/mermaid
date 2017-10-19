@@ -1,6 +1,8 @@
+*.swo
+*.swp
+._.DS_Store
 .DS_Store
-
-node_modules/
 coverage/
-
 dist/*.js
+node_modules/
+npm-debug.log
