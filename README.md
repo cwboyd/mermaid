@@ -1,8 +1,28 @@
+[![Build Status](https://travis-ci.org/knsv/mermaid.svg?branch=master)](https://travis-ci.org/knsv/mermaid)
+[![Coverage Status](https://coveralls.io/repos/github/knsv/mermaid/badge.svg?branch=master)](https://coveralls.io/github/knsv/mermaid?branch=master)
+[![Join the chat at https://gitter.im/knsv/mermaid](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/knsv/mermaid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![This project is using Percy.io for visual regression testing.](https://percy.io/static/images/percy-badge.svg)](https://percy.io/Mermaid/mermaid)
+
 # mermaid
 
-[![Build Status](https://travis-ci.org/knsv/mermaid.svg?branch=master)](https://travis-ci.org/knsv/mermaid)
-[![Code Climate](https://codeclimate.com/github/knsv/mermaid/badges/gpa.svg)](https://codeclimate.com/github/knsv/mermaid)
-[![Join the chat at https://gitter.im/knsv/mermaid](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/knsv/mermaid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+## Special note regarding version 8.2
+
+In version 8.2 a security improvement was introduced. A securityLevel configuration was introduced which sets the level of trust to be used on the parsed diagrams.
+
+* **`strict`**: (default) tags in text are encoded, click functionality is disabled
+* `loose`: tags in text are allowed, click functionality is enabled
+
+⚠️ **Note** : This changes the default behaviour of mermaid so that after upgrade to 8.2, if the securityLevel is not configured, tags in flowcharts are encoded as tags and clicking is prohibited.
+
+If your application is taking responsibility for the diagram source security you can set the securityLevel accordingly. By doing this clicks and tags are again allowed.
+
+```javascript
+mermaidAPI.initialize({
+    securityLevel: 'loose'
+});
+```
+
+**🖖 Keep a steady pulse: mermaid needs more Collaborators [#866](https://github.com/knsv/mermaid/issues/866)**
 
 ![banner](./img/header.png)
 
@@ -12,6 +32,7 @@ Ever wanted to simplify documentation and avoid heavy tools like Visio when expl
 
 This is why mermaid was born, a simple markdown-like script language for generating charts from text via javascript.
 
+**Mermaid was nominated and won the JS Open Source Awards (2019) in the category _The most exciting use of technology_!!! Thanks to all involved, people committing pull requests, people answering questions and special thanks to Tyler Long who is helping me maintain the project.**
 
 ### Flowchart
 
@@ -35,7 +56,7 @@ sequenceDiagram
     loop Healthcheck
         John->>John: Fight against hypochondria
     end
-    Note right of John: Rational thoughts <br/>prevail...
+    Note right of John: Rational thoughts <br/>prevail!
     John-->>Alice: Great!
     John->>Bob: How about you?
     Bob-->>John: Jolly good!
@@ -49,12 +70,13 @@ sequenceDiagram
 gantt
 dateFormat  YYYY-MM-DD
 title Adding GANTT diagram to mermaid
+excludes weekdays 2014-01-10
 
 section A section
 Completed task            :done,    des1, 2014-01-06,2014-01-08
 Active task               :active,  des2, 2014-01-09, 3d
 Future task               :         des3, after des2, 5d
-Future task2               :         des4, after des3, 5d
+Future task2              :         des4, after des3, 5d
 ```
 ![Gantt diagram](./img/gantt.png)
 
@@ -64,6 +86,7 @@ Future task2               :         des4, after des3, 5d
 ```
 classDiagram
 Class01 <|-- AveryLongClass : Cool
+<<interface>> Class01
 Class03 *-- Class04
 Class05 o-- Class06
 Class07 .. Class08
@@ -76,6 +99,11 @@ Class01 : size()
 Class01 : int chimp
 Class01 : int gorilla
 Class08 <--> C2: Cool label
+class Class10 {
+  <<service>>
+  int id
+  size()
+}
 ```
 ![Class diagram](./img/class.png)
 
@@ -109,9 +137,7 @@ merge newbranch
 
 ### CDN
 
-```
-https://unpkg.com/mermaid@<version>/dist/
-```
+    https://unpkg.com/mermaid@<version>/dist/
 
 Replace `<version>` with expected version number.
 
@@ -119,10 +145,22 @@ Example: https://unpkg.com/mermaid@7.1.0/dist/
 
 ### Node.js
 
+    yarn add mermaid
+
+### Preview builds
+Preview builds are created automatically for each release. They can be found in the [GitHub registry](https://github.com/knsv/mermaid/packages).
+Make sure to configure npm to use the GitHub package registry. Steps for that can be found [here](https://help.github.com/en/articles/configuring-npm-for-use-with-github-package-registry).
+
+If you want to get the latest preview for the next release
 ```
-yarn add mermaid
+yarn add @knsv/mermaid
 ```
 
+
+If you want to get the latest preview for a specific version
+```
+yarn add @knsv/mermaid@<version>
+```
 
 ## Documentation
 
@@ -134,6 +172,7 @@ https://mermaidjs.github.io
 - [mermaid CLI](https://github.com/mermaidjs/mermaid.cli)
 - [mermaid live editor](https://github.com/mermaidjs/mermaid-live-editor)
 - [mermaid webpack demo](https://github.com/mermaidjs/mermaid-webpack-demo)
+- [mermaid Parcel demo](https://github.com/mermaidjs/mermaid-parcel-demo)
 
 
 # Request for assistance
@@ -146,7 +185,7 @@ As part of this team you would get write access to the repository and would
 represent the project when answering questions and issues.
 
 Together we could continue the work with things like:
-* adding more typers of diagrams like mindmaps, ert digrams etc
+* adding more types of diagrams like mindmaps, ert diagrams etc
 * improving existing diagrams
 
 Don't hesitate to contact me if you want to get involved.
@@ -156,16 +195,10 @@ Don't hesitate to contact me if you want to get involved.
 
 ## Setup
 
-Make sure you have Chrome browser installed, this project uses Chrome headless to running tests.
-
     yarn install
 
 
 ## Build
-
-    yarn build
-
-If you want real time incremental build:
 
     yarn build:watch
 
@@ -174,8 +207,8 @@ If you want real time incremental build:
 
     yarn lint
 
-We use [JavaScript Standard Style](https://github.com/feross/standard).
-We recommend you installing [editor plugins](https://github.com/feross/standard#are-there-text-editor-plugins) so you can get real time lint result.
+We use [eslint](https://eslint.org/).
+We recommend you installing [editor plugins](https://eslint.org/docs/user-guide/integrations) so you can get real time lint result.
 
 
 ## Test
@@ -184,7 +217,7 @@ We recommend you installing [editor plugins](https://github.com/feross/standard#
 
 Manual test in browser:
 
-    open dist/demo/index.html
+    open dist/index.html
 
 
 ## Release

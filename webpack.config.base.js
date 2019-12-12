@@ -1,44 +1,49 @@
 import path from 'path'
 
-const lodashRule = {
+const amdRule = {
   parser: {
-    amd: false
-  },
-  include: /node_modules\/lodash\// // https://github.com/lodash/lodash/issues/3052
-}
-
-const jsRule = {
-  test: /\.js$/,
-  exclude: /node_modules/,
-  use: {
-    loader: 'babel-loader',
-    options: {
-      presets: [
-        ['env', {
-          'targets': {
-            'browsers': ['last 3 versions']
-          }
-        }]
-      ],
-      plugins: ['lodash']
-    }
+    amd: false // https://github.com/lodash/lodash/issues/3052
   }
 }
 
-const lessRule = { // load less to string
-  test: /\.less$/,
+const jisonRule = {
+  test: /\.jison$/,
+  use: {
+    loader: path.resolve(__dirname, './jisonLoader'),
+    options: {
+      'token-stack': true
+    }
+  }
+}
+const jsRule = {
+  test: /\.js$/,
+  include: [
+    path.resolve(__dirname, './src'),
+    path.resolve(__dirname, './node_modules/dagre-d3-renderer/lib')
+  ],
+  use: {
+    loader: 'babel-loader'
+  }
+}
+
+const scssRule = { // load scss to string
+  test: /\.scss$/,
   use: [
     { loader: 'css-to-string-loader' },
     { loader: 'css-loader' },
-    { loader: 'less-loader' }
+    { loader: 'sass-loader' }
   ]
 }
 
 export const jsConfig = () => {
   return {
+    mode: 'development',
     target: 'web',
     entry: {
       mermaid: './src/mermaid.js'
+    },
+    resolve: {
+      extensions: ['.wasm', '.mjs', '.js', '.json', '.jison']
     },
     node: {
       fs: 'empty' // jison generated code requires 'fs'
@@ -51,7 +56,8 @@ export const jsConfig = () => {
       libraryExport: 'default'
     },
     module: {
-      rules: [lodashRule, jsRule, lessRule]
-    }
+      rules: [amdRule, jsRule, scssRule, jisonRule]
+    },
+    devtool: 'source-map'
   }
 }

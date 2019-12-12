@@ -2,5 +2,11 @@
 
 node_modules/
 coverage/
+.idea/
 
 dist/*.js
+dist/*.map
+
+yarn-error.log
+.npmrc
+token
